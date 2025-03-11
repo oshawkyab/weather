@@ -10,7 +10,7 @@ async function checkWeather(city) {
     try{
 
         const response = await fetch(url + city + `&appid=${apiKey}`);
-        
+        console.log(document.querySelector('.weather-icon').src)
         // error not response
         if(response.ok === false){
             Swal.fire({
@@ -18,8 +18,16 @@ async function checkWeather(city) {
               });
               return ;
         }
-
         let data = await response.json();
+        if(data.main.humidity < 40){
+            document.querySelector('.weather-icon').src = 'assets/clear.png'
+        }else if(data.main.humidity >= 40 && data.main.humidity <= 60){
+            document.querySelector('.weather-icon').src = 'assets/clouds.png'
+        }else if(data.main.humidity >= 80 && data.main.temp > 0){
+            document.querySelector('.weather-icon').src = 'assets/rain.png'
+        }else if(data.main.temp < 0){
+            document.querySelector('.weather-icon').src = 'assets/snow.png'
+        }
         document.querySelector(".city").innerHTML = data.name;
         document.querySelector(".humidity").innerHTML = data.main["humidity"] + "%";
         document.querySelector(".wind").innerHTML = data.wind["speed"] + "KM/H";
@@ -36,6 +44,6 @@ async function checkWeather(city) {
 }
 
 searchBtn.addEventListener('click', function(){
-    checkWeather(searchInp.value);
+    checkWeather(searchInp.value.toLowerCase());
 })
 
